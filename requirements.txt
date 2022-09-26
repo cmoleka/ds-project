@@ -1,3 +1,7 @@
 pandas_profiling
 sklearn
 folium
+dash
+dash_html_components
+dash_core_components
+plotly
