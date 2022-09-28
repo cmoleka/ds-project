@@ -52,8 +52,7 @@ app.layout = html.Div(
             min=0,
             max=10000,
             step=1000,
-            value=[spacex_df['Payload Mass (kg)'].min(
-            ), spacex_df['Payload Mass (kg)'].max()]
+            value=[0, 10000]
         ),
         # TASK 4: Add a scatter chart to show the correlation between payload and launch success
         html.Div(dcc.Graph(id="success-payload-scatter-chart")),
@@ -104,21 +103,22 @@ def get_pie_chart(site):
         Input(component_id='payload-slider', component_property='value')
     ]
 )
-def get_scatter_chart(site: str, payload: list):
-    print(payload)
+def get_scatter_chart(site: str, slider_range: list):
+    low, high = slider_range
+    mask = (spacex_df['Payload Mass (kg)'] > low) & (
+        spacex_df['Payload Mass (kg)'] < high)
     if site == 'All':
         return px.scatter(
-            spacex_df,
+            spacex_df[mask],
             x='Payload Mass (kg)',
             y='class',
             color='Booster Version Category'
         )
     else:
-        filterted = spacex_df[spacex_df["Launch_Site"] == site]
-        filterted = filterted[filterted['Payload Mass (kg)'].between(
-            payload[0], payload[1], inclusive='both')],
+        filtered = spacex_df[mask]
+        filtered = filtered[filtered['Launch_Site'] == site]
         return px.scatter(
-            filterted,
+            filtered,
             x='Payload Mass (kg)',
             y='class',
             color='Booster Version Category'
