@@ -68,8 +68,9 @@ app.layout = html.Div(
     Input(component_id="site-dropdown", component_property="value"),
 )
 def get_pie_chart(site):
-    filtered_df = spacex_df
     if site == "All":
+        filtered_df = spacex_df[spacex_df["class"] == 1].groupby(
+            'Launch_Site', as_index=False).sum()
         return px.pie(
             filtered_df, values="class", names="Launch_Site", title="All Launch Sites", labels={
                 'Launch_Site': 'Launch Site',
